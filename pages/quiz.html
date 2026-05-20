@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║          SANSKRIT VIDYALAYA — Quiz Page                      ║
+  ║                                                              ║
+  ║  File       : pages/quiz.html                                ║
+  ║  Purpose    : Presents a 5-question multiple-choice quiz     ║
+  ║               for the active course. Questions come from     ║
+  ║               QUIZZES[courseId] in data.js.                  ║
+  ║                                                              ║
+  ║  Flow:                                                       ║
+  ║    1. Student selects an answer → colour feedback (green/red)║
+  ║    2. "Next" button advances to the next question            ║
+  ║    3. After Q5 → score calculated                            ║
+  ║       ≥ 60% pass → certificate.html                         ║
+  ║       < 60% fail → player.html (try again message)           ║
+  ║                                                              ║
+  ║  URL Param  : ?course=<id>  (same as player.html)            ║
+  ║  Dependencies:                                               ║
+  ║    ../css/styles.css  – styling                              ║
+  ║    ../js/data.js      – QUIZZES, COURSES                     ║
+  ║    ../js/auth.js      – session guard, getUserData()         ║
+  ║    ../js/quiz.js      – renderQuestion(), selectOption(),    ║
+  ║                         nextQuestion(), finishQuiz()         ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – Sanskrit Vidyalaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body style="background:var(--cream);">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="app-header" role="banner">
+    <div class="app-logo">संस्कृत Vidyalaya</div>
+    <!-- Exit button abandons quiz and returns to player -->
+    <button
+      class="btn-logout"
+      style="margin-left:auto"
+      onclick="exitQuiz()"
+      aria-label="Exit quiz"
+    >✕ Exit Quiz</button>
+  </header>
+
+  <!-- ┌─────────────────────────────────────────────────────────┐
+       │  QUIZ CONTAINER — centred, max-width 700px              │
+       └─────────────────────────────────────────────────────────┘ -->
+  <div class="quiz-container" role="main">
+
+    <!-- ── Quiz Header Bar ────────────────────────────── -->
+    <div class="quiz-header-bar">
+
+      <!-- Back to videos without losing quiz progress -->
+      <button class="player-back" onclick="exitQuiz()">← Back to Videos</button>
+
+      <!-- Course name — filled by quiz.js init -->
+      <div class="quiz-course-name" id="quiz-course-name">Course Quiz</div>
+
+      <!-- Q x / N pill — updated per question by renderQuestion() -->
+      <div class="quiz-progress-pill" id="quiz-progress-pill">Q 1 / 5</div>
+
+    </div>
+
+    <!-- ── Question Card ──────────────────────────────── -->
+    <!--
+      The entire card content is replaced on each question
+      by quiz.js → renderQuestion().
+    -->
+    <div class="question-card" id="question-card" role="region" aria-live="polite">
+
+      <!-- "QUESTION N" label -->
+      <div class="question-num" id="question-num">QUESTION 1</div>
+
+      <!--
+        Optional Devanagari display word (e.g. the Sanskrit term
+        being tested). Hidden via display:none when empty.
+      -->
+      <span
+        class="quiz-devanagari"
+        id="quiz-devanagari"
+        lang="sa"
+        aria-hidden="true"
+      ></span>
+
+      <!-- Question text in English -->
+      <p class="question-text" id="question-text">Loading question…</p>
+
+      <!--
+        Answer options — injected by renderQuestion() in quiz.js.
+        Each button: option-btn, labelled A/B/C/D.
+        On click → selectOption(index) colours correct/wrong.
+      -->
+      <div class="options-list" id="options-list" role="list">
+        <!-- Injected by renderQuestion() -->
+      </div>
+
+    </div><!-- /#question-card -->
+
+    <!-- ── Quiz Navigation ────────────────────────────── -->
+    <div class="quiz-nav">
+      <!--
+        Next / Submit button
+        ─────────────────────
+        • Disabled until an option is selected (quizState.answered).
+        • Label changes to "Submit Quiz" on the last question.
+        • Calls nextQuestion() or finishQuiz() from quiz.js.
+      -->
+      <button
+        class="btn-next"
+        id="btn-next"
+        onclick="nextQuestion()"
+        disabled
+        aria-disabled="true"
+      >Next →</button>
+    </div>
+
+  </div><!-- /.quiz-container -->
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/quiz.js"></script>
+
+  <script>
+    /**
+     * Quiz Page Init
+     * ──────────────
+     * 1. Guard: redirect to login if no session.
+     * 2. Read ?course=<id> from URL.
+     * 3. Confirm course exists and quiz questions are available.
+     * 4. Start the quiz by calling initQuiz(course).
+     */
+    (function initQuizPage() {
+      const user = getSession();
+      if (!user) { window.location = 'login.html'; return; }
+
+      const params   = new URLSearchParams(window.location.search);
+      const courseId = parseInt(params.get('course'), 10);
+      const course   = COURSES.find(c => c.id === courseId);
+      const questions = QUIZZES[courseId];
+
+      if (!course || !questions) {
+        alert('Quiz not found. Returning to dashboard.');
+        window.location = 'dashboard.html';
+        return;
+      }
+
+      // Set course name in header
+      document.getElementById('quiz-course-name').textContent = course.title;
+
+      // Begin quiz — defined in quiz.js
+      initQuiz(course, questions);
+    })();
+
+    /**
+     * exitQuiz
+     * ──────────
+     * Returns the student to the player page for the same course
+     * without saving any partial quiz results.
+     */
+    function exitQuiz() {
+      const params   = new URLSearchParams(window.location.search);
+      const courseId = params.get('course');
+      window.location = 'player.html?course=' + courseId;
+    }
+  </script>
+
+</body>
+</html>

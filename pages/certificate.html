@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║          SANSKRIT VIDYALAYA — Certificate Page               ║
+  ║                                                              ║
+  ║  File       : pages/certificate.html                         ║
+  ║  Purpose    : Displays a printable completion certificate    ║
+  ║               for students who passed the course quiz.       ║
+  ║               Certificate includes student name, course,     ║
+  ║               quiz score, issue date, and a unique cert ID.  ║
+  ║                                                              ║
+  ║  URL Params : ?course=<id>                                   ║
+  ║               Score and student name come from localStorage  ║
+  ║               via auth.js / getUserData().                   ║
+  ║                                                              ║
+  ║  Print      : Window.print() opens system print dialog.      ║
+  ║               CSS @media print rules hide the header/buttons ║
+  ║               so only the certificate card is printed.       ║
+  ║                                                              ║
+  ║  Dependencies:                                               ║
+  ║    ../css/styles.css     – certificate styles                ║
+  ║    ../js/data.js         – COURSES array                     ║
+  ║    ../js/auth.js         – getSession(), getUserData()       ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certificate – Sanskrit Vidyalaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+
+  <!-- Print-only CSS: hide everything except the certificate card -->
+  <style>
+    @media print {
+      .app-header,
+      .cert-actions { display: none !important; }
+      body { background: white !important; }
+      .certificate-container { padding: 0 !important; }
+      .certificate { box-shadow: none !important; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header (hidden on print) -->
+  <header class="app-header" role="banner">
+    <div class="app-logo">संस्कृत Vidyalaya</div>
+    <button class="btn-logout" onclick="window.location='dashboard.html'">← Dashboard</button>
+  </header>
+
+  <!-- ┌─────────────────────────────────────────────────────────┐
+       │  CERTIFICATE CONTAINER                                  │
+       │  Centred, full-height flex column                       │
+       └─────────────────────────────────────────────────────────┘ -->
+  <div class="certificate-container" role="main">
+
+    <!-- ══════════════════════════════════════════════════
+         CERTIFICATE CARD
+         ──────────────────────────────────────────────────
+         Styled as a formal parchment document with:
+           • Double-line border frame
+           • Corner decorations
+           • Gold OM symbol
+           • Student name, course, score, date, cert ID
+    ══════════════════════════════════════════════════ -->
+    <div class="certificate" role="document" aria-label="Completion certificate">
+
+      <!-- Corner decorations (purely decorative) -->
+      <div class="cert-corner tl" aria-hidden="true"></div>
+      <div class="cert-corner tr" aria-hidden="true"></div>
+      <div class="cert-corner bl" aria-hidden="true"></div>
+      <div class="cert-corner br" aria-hidden="true"></div>
+
+      <!-- OM symbol header -->
+      <span class="cert-om" lang="sa" aria-label="Om">ॐ</span>
+
+      <!-- Issuing institution -->
+      <div class="cert-school">Sanskrit Vidyalaya</div>
+      <div class="cert-line" aria-hidden="true"></div>
+
+      <!-- Certificate heading -->
+      <h1 class="cert-heading">Certificate of Completion</h1>
+      <p class="cert-presents">This is to certify that</p>
+
+      <!-- Student name — filled by JS below -->
+      <div class="cert-name" id="cert-name">Student Name</div>
+
+      <p class="cert-body">has successfully completed the course</p>
+
+      <!-- Course title — filled by JS below -->
+      <div class="cert-course" id="cert-course">Course Name</div>
+
+      <!-- Quiz score badge — filled by JS below -->
+      <div class="cert-score" id="cert-score">Quiz Score: —</div>
+
+      <!-- Issue date — filled by JS below -->
+      <p class="cert-date" id="cert-date">Issued on: —</p>
+
+      <!-- Footer: signature + certificate ID -->
+      <div class="cert-footer">
+        <div>
+          <span class="cert-sign">Sanskrit Vidyalaya</span>
+          <small lang="sa">संस्कृत विद्यालय</small>
+        </div>
+        <div style="text-align:right">
+          <!-- Unique cert ID — generated by JS below -->
+          <span class="cert-sign" id="cert-id-text">#SV-000000</span>
+          <small>Certificate ID</small>
+        </div>
+      </div>
+
+    </div><!-- /.certificate -->
+
+    <!-- Action buttons (hidden on print) -->
+    <div class="cert-actions">
+      <!-- Triggers system print dialog; CSS hides non-cert elements -->
+      <button class="btn-download" onclick="window.print()">
+        ⬇ Download / Print Certificate
+      </button>
+
+      <button
+        class="btn"
+        style="margin-top:12px;background:none;border:1px solid var(--text-light);color:var(--text-light);padding:10px 24px;cursor:pointer;border-radius:4px;font-family:'Crimson Pro',serif;font-size:1rem;"
+        onclick="window.location='dashboard.html'"
+      >Back to Dashboard</button>
+    </div>
+
+  </div><!-- /.certificate-container -->
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/auth.js"></script>
+
+  <script>
+    /**
+     * Certificate Page Init
+     * ──────────────────────
+     * Reads the course ID from the URL, fetches the student's
+     * saved quiz score, and populates all certificate fields.
+     *
+     * Fields populated:
+     *   #cert-name    – student's full name from session
+     *   #cert-course  – course title + Devanagari name
+     *   #cert-score   – quiz score percentage
+     *   #cert-date    – today's date formatted for India locale
+     *   #cert-id-text – unique certificate ID (SV-<courseId>-<timestamp>)
+     */
+    (function initCertificate() {
+      // ── Session guard ──────────────────────────────────
+      const user = getSession();
+      if (!user) { window.location = 'login.html'; return; }
+
+      // ── Resolve course from URL ────────────────────────
+      const params   = new URLSearchParams(window.location.search);
+      const courseId = parseInt(params.get('course'), 10);
+      const course   = COURSES.find(c => c.id === courseId);
+
+      if (!course) {
+        alert('Certificate not found. Returning to dashboard.');
+        window.location = 'dashboard.html';
+        return;
+      }
+
+      // ── Fetch saved quiz score ─────────────────────────
+      const ud    = getUserData(user.email); // from auth.js
+      const score = (ud.quizScores && ud.quizScores[courseId]) || 0;
+
+      // ── Populate certificate fields ────────────────────
+      document.getElementById('cert-name').textContent   = user.name;
+      document.getElementById('cert-course').textContent = `${course.title} (${course.devanagari})`;
+      document.getElementById('cert-score').textContent  = `Quiz Score: ${score}%`;
+
+      // Format date: "27 February 2026"
+      const now = new Date().toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+      document.getElementById('cert-date').textContent = `Issued on: ${now}`;
+
+      // Generate a unique certificate ID using course ID + timestamp tail
+      const certId = `SV-${String(courseId).padStart(2, '0')}-${Date.now().toString().slice(-6)}`;
+      document.getElementById('cert-id-text').textContent = `#${certId}`;
+    })();
+  </script>
+
+</body>
+</html>

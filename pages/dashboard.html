@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║          SANSKRIT VIDYALAYA — Dashboard                      ║
+  ║                                                              ║
+  ║  File       : pages/dashboard.html                           ║
+  ║  Purpose    : Main authenticated area. Houses two tabs:      ║
+  ║               1. All Courses  – browse & enroll              ║
+  ║               2. My Learning  – enrolled courses + progress  ║
+  ║  Access     : Requires active session (checked by app.js).   ║
+  ║               Unauthenticated users → redirected to login.   ║
+  ║  Dependencies:                                               ║
+  ║    ../css/styles.css – layout & component styles             ║
+  ║    ../js/data.js     – COURSES array & QUIZZES object        ║
+  ║    ../js/auth.js     – session management & logout           ║
+  ║    ../js/app.js      – renderCourses(), renderMyLearning(),  ║
+  ║                        enrollCourse(), openCourse()          ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Sanskrit Vidyalaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+  <!-- ┌─────────────────────────────────────────────────────────┐
+       │  STICKY APP HEADER                                      │
+       │  Contains: logo | tab navigation | user info | logout   │
+       └─────────────────────────────────────────────────────────┘ -->
+  <header class="app-header" role="banner">
+
+    <!-- Brand logo (left) -->
+    <div class="app-logo" aria-label="Sanskrit Vidyalaya">
+      <span style="font-size:1.3rem;">🕉</span> SanskritVidya
+    </div>
+
+    <!-- ── Tab Navigation ─────────────────────────────── -->
+    <!--
+      Tabs switch between the two main sections below.
+      Active tab is highlighted via .active-tab class.
+      showSection() in app.js handles the switching logic.
+    -->
+    <nav class="app-nav" role="navigation" aria-label="Dashboard sections">
+      <button
+        class="nav-tab active-tab"
+        onclick="showSection('courses', this)"
+        aria-selected="true"
+      >🏠 Home</button>
+
+      <button
+        class="nav-tab"
+        onclick="showSection('my-learning', this)"
+        aria-selected="false"
+      >📚 Courses</button>
+
+      <button
+        class="nav-tab"
+        onclick="showSection('profile', this)"
+        aria-selected="false"
+      >👤 Profile</button>
+    </nav>
+
+    <!-- ── User Info & Logout ──────────────────────────── -->
+    <!-- Populated by auth.js on page load -->
+    <div class="user-info">
+      <div class="user-avatar" id="user-avatar-text" aria-hidden="true">S</div>
+      <span class="user-name"  id="user-display-name">Student</span>
+      <!-- doLogout() clears session and redirects to index.html -->
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 1: ALL COURSES
+       ──────────────────────────────────────────────────────
+       Default visible section. Course cards are injected
+       dynamically by renderCourses() in app.js.
+  ══════════════════════════════════════════════════════ -->
+  <section id="section-courses" class="section active-section" aria-label="All courses">
+
+    <!-- Decorative header banner -->
+    <div class="section-header">
+      <div class="section-title">Explore Courses</div>
+      <p class="section-desc">Choose your path through the sacred language of the Vedas</p>
+    </div>
+
+    <!--
+      Course cards grid — populated by app.js → renderCourses().
+      Each card has: thumbnail, level badge, title, description,
+      lesson count, and an Enroll / Continue button.
+    -->
+    <div class="courses-grid" id="courses-grid" role="list" aria-label="Available courses">
+      <!-- Injected by renderCourses() in app.js -->
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 2: MY LEARNING
+       ──────────────────────────────────────────────────────
+       Hidden initially. Shows enrolled courses with progress
+       bars. Populated by renderMyLearning() in app.js.
+  ══════════════════════════════════════════════════════ -->
+  <section id="section-my-learning" class="section" aria-label="My learning">
+
+    <div class="section-header">
+      <div class="section-title">My Learning</div>
+      <p class="section-desc">Your enrolled courses and progress</p>
+    </div>
+
+    <!--
+      Enrolled course list — populated by app.js → renderMyLearning().
+      Each row shows: course icon, title, progress bar, quiz score,
+      and a Continue button.
+    -->
+    <div class="my-learning-container" id="my-learning-list">
+      <!-- Injected by renderMyLearning() in app.js -->
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 3: PROFILE
+       ──────────────────────────────────────────────────────
+       Shows user profile info, stats, certificates,
+       and password update option.
+  ══════════════════════════════════════════════════════ -->
+  <section id="section-profile" class="section" aria-label="My profile">
+
+    <div class="section-header">
+      <div class="section-title">My Profile</div>
+      <p class="section-desc">Your Sanskrit learning journey</p>
+    </div>
+
+    <div class="profile-container">
+      <div class="profile-card">
+
+        <!-- Avatar -->
+        <div class="profile-avatar" id="profile-avatar">P</div>
+
+        <!-- Name & Email -->
+        <div class="profile-name" id="profile-name">Student</div>
+        <div class="profile-email" id="profile-email">student@email.com</div>
+
+        <!-- Stats Row -->
+        <div class="profile-stats">
+          <div class="profile-stat-item">
+            <span class="profile-stat-num" id="stat-enrolled">0</span>
+            <span class="profile-stat-label">Enrolled</span>
+          </div>
+          <div class="profile-stat-item">
+            <span class="profile-stat-num" id="stat-videos-done">0</span>
+            <span class="profile-stat-label">Videos Done</span>
+          </div>
+          <div class="profile-stat-item">
+            <span class="profile-stat-num" id="stat-certificates">0</span>
+            <span class="profile-stat-label">Certificates</span>
+          </div>
+        </div>
+
+        <!-- Certificates Earned -->
+        <div class="profile-certificates-section">
+          <h3 class="profile-section-heading">🏆 Certificates Earned</h3>
+          <div id="profile-certificates-list">
+            <p class="profile-empty-msg">Complete courses and pass quizzes to earn certificates.</p>
+          </div>
+        </div>
+
+        <!-- Update Password -->
+        <div class="profile-password-section">
+          <h3 class="profile-section-heading">🔒 Update Password</h3>
+          <div class="profile-password-form">
+            <div class="form-group">
+              <label for="current-password">Current Password</label>
+              <input type="password" id="current-password" placeholder="Enter current password" />
+            </div>
+            <div class="form-group">
+              <label for="new-password">New Password</label>
+              <input type="password" id="new-password" placeholder="Enter new password (min 6 chars)" />
+            </div>
+            <div class="form-group">
+              <label for="confirm-password">Confirm New Password</label>
+              <input type="password" id="confirm-password" placeholder="Confirm new password" />
+            </div>
+            <div class="error-msg" id="password-error" style="display:none;"></div>
+            <div class="success-msg" id="password-success" style="display:none;"></div>
+            <button class="btn-update-password" onclick="doUpdatePassword()">Update Password</button>
+          </div>
+        </div>
+
+      </div><!-- /.profile-card -->
+    </div><!-- /.profile-container -->
+
+  </section>
+
+  <!-- Global toast notification -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Load order matters: data first, then auth, then app logic -->
+  <script src="../js/data.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    /**
+     * Dashboard Init
+     * -------------
+     * 1. Verify user session exists (auth.js).
+     *    If not → redirect to login page.
+     * 2. Populate header with user's name & avatar initial.
+     * 3. Render the default "All Courses" section.
+     */
+    (function initDashboard() {
+      const user = getSession(); // defined in auth.js
+      if (!user) {
+        window.location = 'login.html';
+        return;
+      }
+      // Set avatar letter and display name in the header
+      const initial = user.name.charAt(0).toUpperCase();
+      document.getElementById('user-avatar-text').textContent = initial;
+      document.getElementById('user-display-name').textContent = user.name;
+
+      // Populate profile section
+      document.getElementById('profile-avatar').textContent = initial;
+      document.getElementById('profile-name').textContent = user.name;
+      document.getElementById('profile-email').textContent = user.email;
+
+      // Render course cards
+      renderCourses(); // defined in app.js
+    })();
+  </script>
+
+</body>
+</html>

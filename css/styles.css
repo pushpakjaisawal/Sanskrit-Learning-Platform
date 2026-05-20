@@ -1,0 +1,1853 @@
+/**
+ * ╔══════════════════════════════════════════════════════════════╗
+ * ║  styles.css — Sanskrit Vidyalaya Master Stylesheet          ║
+ * ╠══════════════════════════════════════════════════════════════╣
+ * ║                                                              ║
+ * ║  Table of Contents:                                          ║
+ * ║    1.  CSS Custom Properties (Design Tokens)                 ║
+ * ║    2.  Reset & Base Styles                                   ║
+ * ║    3.  Scrollbar                                             ║
+ * ║    4.  Utility Classes                                       ║
+ * ║    5.  Landing Page                                          ║
+ * ║        5a. Navigation                                        ║
+ * ║        5b. Hero Section                                      ║
+ * ║        5c. Features Strip                                    ║
+ * ║    6.  Buttons                                               ║
+ * ║    7.  Auth Pages (Login / Register)                         ║
+ * ║    8.  App Header (Dashboard & Player)                       ║
+ * ║    9.  Dashboard                                             ║
+ * ║        9a. Section Header Banner                             ║
+ * ║        9b. Course Cards Grid                                 ║
+ * ║        9c. My Learning List                                  ║
+ * ║   10.  Video Player Page                                     ║
+ * ║   11.  Playlist Sidebar                                      ║
+ * ║   12.  Quiz Page                                             ║
+ * ║   13.  Certificate Page                                      ║
+ * ║   14.  Toast Notification                                    ║
+ * ║   15.  Responsive / Media Queries                            ║
+ * ╚══════════════════════════════════════════════════════════════╝
+ */
+
+
+/* ══════════════════════════════════════════════════════════════
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   ──────────────────────────────────────────────────────────────
+   All colours, shadows, and spacings are defined as variables
+   here so they can be updated from a single location.
+══════════════════════════════════════════════════════════════ */
+:root {
+  /* ── Colour Palette ──────────────────────────────────── */
+  --saffron:     #E8751A;  /* Primary CTA & accent */
+  --deep-red:    #C0392B;  /* Secondary CTA, error states */
+  --gold:        #D4A017;  /* Borders, badges, highlights */
+  --gold-light:  #F5D06A;  /* Text on dark backgrounds */
+  --cream:       #FDF6E3;  /* Page background */
+  --parchment:   #F5EDD0;  /* Card backgrounds, dividers */
+  --dark:        #1A1208;  /* Landing page background */
+  --dark-brown:  #2D1B00;  /* App header, section headers */
+  --mid-brown:   #5C3D11;  /* Form labels, medium text */
+  --text:        #2D1B00;  /* Primary body text */
+  --text-light:  #7A5C2E;  /* Secondary / muted text */
+  --white:       #FFFFFF;
+  --success:     #2E7D32;  /* Completed states, correct answers */
+
+  /* ── Shadows ─────────────────────────────────────────── */
+  --shadow:    0 4px 24px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.18);
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-display : 'Cinzel Decorative', serif;
+  --font-body    : 'Crimson Pro', Georgia, serif;
+  --font-devanag : 'Noto Sans Devanagari', sans-serif;
+
+  /* ── Transition ──────────────────────────────────────── */
+  --transition: 0.25s ease;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   2. RESET & BASE STYLES
+══════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  margin:     0;
+  padding:    0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:   var(--font-body);
+  background:    var(--cream);
+  color:         var(--text);
+  min-height:    100vh;
+  overflow-x:    hidden;
+  line-height:   1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display:   block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   3. CUSTOM SCROLLBAR (WebKit browsers)
+══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar             { width: 8px; }
+::-webkit-scrollbar-track       { background: var(--parchment); }
+::-webkit-scrollbar-thumb       { background: var(--gold); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--saffron); }
+
+
+/* ══════════════════════════════════════════════════════════════
+   4. UTILITY CLASSES
+══════════════════════════════════════════════════════════════ */
+
+/* Screen-reader only (accessible hiding) */
+.sr-only {
+  position:   absolute;
+  width:      1px;
+  height:     1px;
+  padding:    0;
+  margin:     -1px;
+  overflow:   hidden;
+  clip:       rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border:     0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   5. LANDING PAGE
+══════════════════════════════════════════════════════════════ */
+
+/* Full-screen dark wrapper */
+#page-landing,
+.landing-page {
+  background: linear-gradient(135deg, #1A1208 0%, #2D1B00 40%, #5C3D11 100%);
+  position:   relative;
+  overflow:   hidden;
+  min-height: 100vh;
+}
+
+/* ── 5a. Rotating mandala watermark (decorative) ────────── */
+.mandala-bg {
+  position:  absolute;
+  top:       50%;
+  left:      50%;
+  transform: translate(-50%, -50%);
+  width:     900px;
+  height:    900px;
+  opacity:   0.04;
+  /* Concentric circles using radial-gradient repeating rings */
+  background-image: radial-gradient(circle at center,
+    transparent 30%,
+    var(--gold) 30.5%,  transparent 31%,
+    transparent 40%,
+    var(--gold) 40.5%,  transparent 41%,
+    transparent 50%,
+    var(--gold) 50.5%,  transparent 51%
+  );
+  animation: rotateMandala 60s linear infinite;
+  pointer-events: none; /* Don't intercept clicks */
+}
+
+@keyframes rotateMandala {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ── Navigation bar ─────────────────────────────────────── */
+.landing-nav {
+  position:        relative;
+  z-index:         10;
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  padding:         24px 60px;
+  border-bottom:   1px solid rgba(212, 160, 23, 0.2);
+}
+
+.nav-brand { display: flex; flex-direction: column; }
+
+.logo-text {
+  font-family:    var(--font-display);
+  color:          var(--gold-light);
+  font-size:      1.3rem;
+  letter-spacing: 2px;
+}
+
+.logo-devanagari {
+  font-family:    var(--font-devanag);
+  color:          var(--gold);
+  font-size:      0.95rem;
+  display:        block;
+  letter-spacing: 3px;
+  margin-top:     2px;
+}
+
+.nav-buttons { display: flex; gap: 12px; }
+
+/* ── 5b. Hero Section ────────────────────────────────────── */
+.hero {
+  position:        relative;
+  z-index:         5;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  text-align:      center;
+  padding:         100px 40px 80px;
+  min-height:      calc(100vh - 90px);
+}
+
+.hero-badge {
+  display:          inline-block;
+  background:       rgba(212, 160, 23, 0.15);
+  border:           1px solid rgba(212, 160, 23, 0.4);
+  color:            var(--gold-light);
+  padding:          6px 20px;
+  border-radius:    100px;
+  font-size:        0.85rem;
+  letter-spacing:   2px;
+  text-transform:   uppercase;
+  margin-bottom:    32px;
+  font-family:      var(--font-devanag);
+}
+
+.hero-title {
+  font-family:  var(--font-display);
+  color:        var(--cream);
+  font-size:    clamp(2.5rem, 6vw, 5rem);
+  line-height:  1.1;
+  margin-bottom: 12px;
+  animation:    fadeUp 0.8s ease forwards;
+}
+.hero-title span { color: var(--gold-light); }
+
+.hero-devanagari {
+  font-family:   var(--font-devanag);
+  color:         var(--gold);
+  font-size:     clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: 28px;
+  font-weight:   300;
+  letter-spacing: 4px;
+  animation:     fadeUp 0.8s 0.15s ease both;
+}
+
+.hero-subtitle {
+  color:         rgba(253, 246, 227, 0.7);
+  font-size:     1.2rem;
+  max-width:     600px;
+  line-height:   1.7;
+  margin-bottom: 48px;
+  font-style:    italic;
+  animation:     fadeUp 0.8s 0.3s ease both;
+}
+
+.hero-cta {
+  display:         flex;
+  gap:             16px;
+  flex-wrap:       wrap;
+  justify-content: center;
+  animation:       fadeUp 0.8s 0.45s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 5c. Features Strip ─────────────────────────────────── */
+.features-strip {
+  position:             relative;
+  z-index:              5;
+  display:              grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap:                  0;
+  border-top:           1px solid rgba(212, 160, 23, 0.2);
+  background:           rgba(0, 0, 0, 0.3);
+  backdrop-filter:      blur(8px);
+}
+
+.feature-item {
+  padding:      32px 24px;
+  text-align:   center;
+  border-right: 1px solid rgba(212, 160, 23, 0.15);
+  transition:   background var(--transition);
+}
+.feature-item:last-child { border-right: none; }
+.feature-item:hover      { background: rgba(212, 160, 23, 0.08); }
+
+.feature-icon {
+  font-size:     2rem;
+  margin-bottom: 10px;
+  display:       block;
+}
+
+.feature-item h3 {
+  font-family:    var(--font-display);
+  color:          var(--gold-light);
+  font-size:      0.9rem;
+  margin-bottom:  6px;
+  font-weight:    400;
+}
+
+.feature-item p {
+  color:      rgba(253, 246, 227, 0.55);
+  font-size:  0.9rem;
+  font-style: italic;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   6. BUTTONS
+══════════════════════════════════════════════════════════════ */
+
+/* Base button styles shared by all variants */
+.btn {
+  padding:        10px 24px;
+  border-radius:  4px;
+  font-family:    var(--font-body);
+  font-size:      1rem;
+  cursor:         pointer;
+  border:         none;
+  transition:     all var(--transition);
+  font-weight:    600;
+  letter-spacing: 0.5px;
+  display:        inline-block;
+}
+
+/* Outlined button — used in the landing nav */
+.btn-outline {
+  background: transparent;
+  border:     1.5px solid var(--gold);
+  color:      var(--gold);
+}
+.btn-outline:hover {
+  background: var(--gold);
+  color:      var(--dark);
+}
+
+/* Solid gold button */
+.btn-solid {
+  background: linear-gradient(135deg, var(--saffron), var(--gold));
+  color:      var(--dark);
+}
+.btn-solid:hover {
+  transform:  translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 160, 23, 0.4);
+}
+
+/* Primary CTA — saffron to deep red */
+.btn-primary {
+  background:  linear-gradient(135deg, var(--saffron), var(--deep-red));
+  color:       white;
+  padding:     14px 36px;
+  font-size:   1.1rem;
+  border-radius: 4px;
+  border:      none;
+}
+.btn-primary:hover {
+  transform:  translateY(-2px);
+  box-shadow: 0 8px 24px rgba(192, 57, 43, 0.4);
+}
+
+/* Secondary CTA — ghost button for dark backgrounds */
+.btn-secondary {
+  background:  transparent;
+  border:      1.5px solid rgba(255, 255, 255, 0.4);
+  color:       white;
+  padding:     14px 36px;
+  font-size:   1.1rem;
+  border-radius: 4px;
+}
+.btn-secondary:hover {
+  border-color: var(--gold);
+  color:        var(--gold);
+}
+
+/* Auth form submit button */
+.btn-auth {
+  width:          100%;
+  padding:        14px;
+  background:     linear-gradient(135deg, var(--saffron), var(--deep-red));
+  color:          white;
+  border:         none;
+  border-radius:  6px;
+  font-family:    var(--font-display);
+  font-size:      1rem;
+  font-weight:    400;
+  cursor:         pointer;
+  letter-spacing: 1px;
+  transition:     all var(--transition);
+  margin-top:     8px;
+}
+.btn-auth:hover {
+  transform:  translateY(-2px);
+  box-shadow: 0 6px 20px rgba(192, 57, 43, 0.35);
+}
+
+/* Course card enroll button */
+.btn-enroll {
+  background:  linear-gradient(135deg, var(--saffron), var(--gold));
+  color:       var(--dark);
+  border:      none;
+  padding:     8px 20px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size:   0.9rem;
+  font-weight: 600;
+  cursor:      pointer;
+  transition:  all var(--transition);
+  white-space: nowrap;
+}
+.btn-enroll:hover      { transform: scale(1.04); }
+.btn-enroll.enrolled   { background: linear-gradient(135deg, #27AE60, #1E8449); color: white; }
+
+/* "Continue" button in My Learning section */
+.btn-continue {
+  background:   linear-gradient(135deg, var(--saffron), var(--deep-red));
+  color:        white;
+  border:       none;
+  padding:      10px 22px;
+  border-radius: 4px;
+  font-family:  var(--font-body);
+  font-size:    0.9rem;
+  font-weight:  600;
+  cursor:       pointer;
+  white-space:  nowrap;
+  transition:   opacity var(--transition);
+}
+.btn-continue:hover { opacity: 0.88; }
+
+/* "Mark as Complete" button in player */
+.btn-mark-done {
+  background:  linear-gradient(135deg, var(--success), #1B5E20);
+  color:       white;
+  border:      none;
+  padding:     11px 28px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size:   1rem;
+  font-weight: 600;
+  cursor:      pointer;
+  transition:  all var(--transition);
+}
+.btn-mark-done:hover    { transform: translateY(-2px); }
+.btn-mark-done:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+/* Download certificate */
+.btn-download {
+  background:     linear-gradient(135deg, var(--saffron), var(--deep-red));
+  color:          white;
+  border:         none;
+  padding:        14px 36px;
+  border-radius:  6px;
+  font-family:    var(--font-display);
+  font-size:      0.95rem;
+  cursor:         pointer;
+  margin-top:     28px;
+  transition:     all var(--transition);
+  letter-spacing: 0.5px;
+}
+.btn-download:hover {
+  transform:  translateY(-2px);
+  box-shadow: 0 8px 24px rgba(192, 57, 43, 0.3);
+}
+
+/* App header logout */
+.btn-logout {
+  background:  none;
+  border:      1px solid rgba(212, 160, 23, 0.4);
+  color:       var(--gold);
+  padding:     6px 14px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size:   0.9rem;
+  cursor:      pointer;
+  transition:  all var(--transition);
+}
+.btn-logout:hover { background: rgba(212, 160, 23, 0.15); }
+
+/* Quiz Next/Submit button */
+.btn-next {
+  background:     linear-gradient(135deg, var(--saffron), var(--gold));
+  color:          var(--dark);
+  border:         none;
+  padding:        12px 32px;
+  border-radius:  6px;
+  font-family:    var(--font-display);
+  font-size:      0.9rem;
+  cursor:         pointer;
+  transition:     all var(--transition);
+  margin-left:    auto;
+}
+.btn-next:hover    { transform: translateY(-2px); }
+.btn-next:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+/* Playlist take-quiz anchor-button */
+.btn-take-quiz {
+  display:        block;
+  width:          calc(100% - 40px);
+  margin:         20px;
+  padding:        12px;
+  background:     linear-gradient(135deg, var(--saffron), var(--deep-red));
+  color:          white;
+  border:         none;
+  border-radius:  6px;
+  font-family:    var(--font-display);
+  font-size:      0.9rem;
+  cursor:         pointer;
+  letter-spacing: 0.5px;
+  transition:     all var(--transition);
+  text-align:     center;
+  text-decoration: none;
+}
+.btn-take-quiz:hover {
+  transform:  translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   7. AUTH PAGES (Login / Register)
+══════════════════════════════════════════════════════════════ */
+
+/* Auth pages use a centred flex body */
+.auth-body {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-direction:  column;
+  min-height:      100vh;
+  background:      linear-gradient(135deg, var(--parchment) 0%, var(--cream) 60%, #FEF9F0 100%);
+}
+
+.auth-card {
+  background:    white;
+  border-radius: 12px;
+  box-shadow:    var(--shadow-lg);
+  padding:       48px 52px;
+  width:         100%;
+  max-width:     460px;
+  border-top:    4px solid var(--gold);
+  position:      relative;
+  overflow:      hidden;
+}
+
+/* Watermark OM symbol */
+.auth-om {
+  position:    absolute;
+  right:       20px;
+  top:         14px;
+  font-family: var(--font-devanag);
+  font-size:   3rem;
+  color:       rgba(212, 160, 23, 0.1);
+  line-height: 1;
+  user-select: none;
+}
+
+.auth-back {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  color:       var(--text-light);
+  background:  none;
+  border:      none;
+  font-family: var(--font-body);
+  font-size:   1rem;
+  cursor:      pointer;
+  margin-bottom: 24px;
+  padding:     0;
+  transition:  color var(--transition);
+}
+.auth-back:hover { color: var(--saffron); }
+
+.auth-title {
+  font-family:   var(--font-display);
+  font-size:     1.6rem;
+  color:         var(--dark-brown);
+  margin-bottom: 6px;
+  font-weight:   400;
+}
+
+.auth-subtitle {
+  color:         var(--text-light);
+  font-style:    italic;
+  margin-bottom: 32px;
+  font-size:     0.95rem;
+}
+
+/* ── Form Elements ───────────────────────────────────────── */
+.form-group { margin-bottom: 20px; }
+
+.form-group label {
+  display:        block;
+  font-weight:    600;
+  color:          var(--mid-brown);
+  margin-bottom:  7px;
+  font-size:      0.9rem;
+  letter-spacing: 0.3px;
+}
+
+.form-group input,
+.form-group select {
+  width:        100%;
+  padding:      12px 16px;
+  border:       1.5px solid #E0D5C0;
+  border-radius: 6px;
+  font-family:  var(--font-body);
+  font-size:    1rem;
+  color:        var(--text);
+  background:   var(--cream);
+  transition:   border-color var(--transition), box-shadow var(--transition);
+  outline:      none;
+}
+
+.form-group select {
+  cursor:      pointer;
+  appearance:  none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235C3D11' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--gold);
+  box-shadow:   0 0 0 3px rgba(212, 160, 23, 0.15);
+}
+
+/* Inline error banner */
+.error-msg {
+  background:    #FFF0F0;
+  border:        1px solid #FFAAAA;
+  color:         var(--deep-red);
+  padding:       10px 14px;
+  border-radius: 6px;
+  font-size:     0.9rem;
+  margin-bottom: 16px;
+  display:       none; /* Shown by JS on error */
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 24px;
+  color:      var(--text-light);
+  font-size:  0.95rem;
+}
+.auth-switch a {
+  color:       var(--saffron);
+  cursor:      pointer;
+  font-weight: 600;
+}
+.auth-switch a:hover { text-decoration: underline; }
+
+/* Forgot password link on login page */
+.auth-forgot {
+  text-align: right;
+  margin-top: -4px;
+  margin-bottom: 8px;
+  font-size:  0.9rem;
+}
+.auth-forgot a {
+  color:       var(--saffron);
+  cursor:      pointer;
+  font-weight: 600;
+  transition:  color var(--transition);
+}
+.auth-forgot a:hover {
+  color: var(--deep-red);
+  text-decoration: underline;
+}
+
+/* ── Forgot Password Steps ──────────────────────────────── */
+.forgot-step-indicator {
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  gap:         0;
+  margin-bottom: 28px;
+}
+
+.step-dot {
+  width:            36px;
+  height:           36px;
+  border-radius:    50%;
+  background:       var(--parchment);
+  border:           2px solid #E0D5C0;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-family:      var(--font-display);
+  font-size:        0.8rem;
+  color:            var(--text-light);
+  font-weight:      700;
+  flex-shrink:      0;
+  transition:       all var(--transition);
+}
+
+.step-dot.active {
+  background:   linear-gradient(135deg, var(--saffron), var(--gold));
+  border-color: var(--saffron);
+  color:        white;
+}
+
+.step-dot.done {
+  background:   var(--success);
+  border-color: var(--success);
+  color:        white;
+  font-size:    0.9rem;
+}
+
+.step-line {
+  width:      48px;
+  height:     2px;
+  background: #E0D5C0;
+  transition: background var(--transition);
+}
+
+.step-line.active {
+  background: linear-gradient(90deg, var(--saffron), var(--gold));
+}
+
+.step-line.done {
+  background: var(--success);
+}
+
+.forgot-instruction {
+  color:         var(--text-light);
+  font-size:     0.95rem;
+  font-style:    italic;
+  line-height:   1.6;
+  margin-bottom: 24px;
+  text-align:    center;
+}
+
+.otp-resend {
+  text-align: center;
+  margin-top: 16px;
+  color:      var(--text-light);
+  font-size:  0.9rem;
+}
+.otp-resend a {
+  color:       var(--saffron);
+  cursor:      pointer;
+  font-weight: 600;
+}
+.otp-resend a:hover { text-decoration: underline; }
+
+/* Success message (shared across forgot-password & profile) */
+.success-msg {
+  background:    #F0FFF4;
+  border:        1px solid #A3D9A5;
+  color:         var(--success);
+  padding:       10px 14px;
+  border-radius: 6px;
+  font-size:     0.9rem;
+  margin-bottom: 16px;
+  display:       none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   8. APP HEADER (Dashboard & Player shared)
+══════════════════════════════════════════════════════════════ */
+.app-header {
+  background:      var(--dark-brown);
+  color:           white;
+  padding:         0 40px;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  height:          64px;
+  position:        sticky;
+  top:             0;
+  z-index:         100;
+  box-shadow:      0 2px 16px rgba(0, 0, 0, 0.3);
+  gap:             16px;
+}
+
+.app-logo {
+  font-family:    var(--font-devanag);
+  color:          var(--gold-light);
+  font-size:      1.1rem;
+  letter-spacing: 1px;
+  flex-shrink:    0;
+}
+
+/* ── Tab navigation ─────────────────────────────────────── */
+.app-nav { display: flex; gap: 4px; }
+
+.nav-tab {
+  padding:      8px 18px;
+  background:   none;
+  border:       none;
+  color:        rgba(253, 246, 227, 0.6);
+  font-family:  var(--font-body);
+  font-size:    1rem;
+  cursor:       pointer;
+  border-radius: 4px;
+  transition:   all var(--transition);
+}
+.nav-tab:hover      { background: rgba(212, 160, 23, 0.15); color: var(--gold-light); }
+.nav-tab.active-tab { background: rgba(212, 160, 23, 0.2);  color: var(--gold-light); }
+
+/* ── User info block ─────────────────────────────────────── */
+.user-info {
+  display:     flex;
+  align-items: center;
+  gap:         12px;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  width:          36px;
+  height:         36px;
+  background:     linear-gradient(135deg, var(--saffron), var(--gold));
+  border-radius:  50%;
+  display:        flex;
+  align-items:    center;
+  justify-content: center;
+  font-family:    var(--font-display);
+  font-size:      0.85rem;
+  color:          var(--dark);
+  font-weight:    700;
+  flex-shrink:    0;
+}
+
+.user-name {
+  color:     var(--gold-light);
+  font-size: 0.95rem;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   9. DASHBOARD
+══════════════════════════════════════════════════════════════ */
+
+/* Section visibility — only .active-section is shown */
+.section { display: none; }
+.section.active-section { display: block; }
+
+/* ── 9a. Section Header Banner ───────────────────────────── */
+.section-header {
+  background: linear-gradient(135deg, var(--dark-brown), #3D2200);
+  color:      white;
+  padding:    48px 60px;
+  position:   relative;
+  overflow:   hidden;
+}
+
+/* Devanagari watermark word in the background */
+.section-header::after {
+  content:     'विद्या';
+  position:    absolute;
+  right:       60px;
+  top:         50%;
+  transform:   translateY(-50%);
+  font-family: var(--font-devanag);
+  font-size:   5rem;
+  color:       rgba(212, 160, 23, 0.1);
+  font-weight: 700;
+  letter-spacing: 8px;
+  pointer-events: none;
+}
+
+.section-title {
+  font-family:   var(--font-display);
+  font-size:     2rem;
+  color:         var(--gold-light);
+  margin-bottom: 8px;
+  font-weight:   400;
+}
+
+.section-desc {
+  color:      rgba(253, 246, 227, 0.65);
+  font-style: italic;
+  font-size:  1.05rem;
+}
+
+/* ── 9b. Course Cards Grid ────────────────────────────────── */
+.courses-grid {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap:                   24px;
+  padding:               48px 60px;
+}
+
+.course-card {
+  background:    white;
+  border-radius: 10px;
+  overflow:      hidden;
+  box-shadow:    var(--shadow);
+  transition:    transform var(--transition), box-shadow var(--transition);
+  border:        1px solid rgba(212, 160, 23, 0.15);
+  cursor:        default;
+}
+.course-card:hover {
+  transform:  translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Coloured gradient thumbnails — one class per course */
+.course-thumb {
+  height:          140px;
+  position:        relative;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       3.5rem;
+}
+.course-thumb-1 { background: linear-gradient(135deg, #FF6B35, #FF9F1C); }
+.course-thumb-2 { background: linear-gradient(135deg, #7B2D8B, #C71585); }
+.course-thumb-3 { background: linear-gradient(135deg, #1A5276, #2E86AB); }
+.course-thumb-4 { background: linear-gradient(135deg, #1E8449, #27AE60); }
+.course-thumb-5 { background: linear-gradient(135deg, #B7950B, #D4A017); }
+.course-thumb-6 { background: linear-gradient(135deg, #922B21, #C0392B); }
+
+.course-level-badge {
+  position:     absolute;
+  top:          12px;
+  right:        12px;
+  background:   rgba(0, 0, 0, 0.45);
+  color:        white;
+  padding:      3px 10px;
+  border-radius: 100px;
+  font-size:    0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family:  var(--font-body);
+}
+
+.enrolled-badge {
+  position:     absolute;
+  top:          12px;
+  left:         12px;
+  background:   var(--success);
+  color:        white;
+  padding:      3px 10px;
+  border-radius: 100px;
+  font-size:    0.75rem;
+  display:      none; /* Shown via .show class */
+}
+.enrolled-badge.show { display: block; }
+
+.course-body { padding: 20px 22px; }
+
+.course-title {
+  font-family:   var(--font-display);
+  font-size:     1rem;
+  color:         var(--dark-brown);
+  margin-bottom: 6px;
+  font-weight:   400;
+}
+
+.course-devanagari {
+  font-family:   var(--font-devanag);
+  color:         var(--text-light);
+  font-size:     0.9rem;
+  margin-bottom: 10px;
+}
+
+.course-desc {
+  color:         var(--text-light);
+  font-size:     0.9rem;
+  font-style:    italic;
+  line-height:   1.5;
+  margin-bottom: 14px;
+}
+
+.course-meta {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  font-size:       0.85rem;
+  color:           var(--text-light);
+  border-top:      1px solid var(--parchment);
+  padding-top:     12px;
+}
+
+/* ── 9c. My Learning List ─────────────────────────────────── */
+.my-learning-container { padding: 48px 60px; }
+
+.enrolled-course-item {
+  background:    white;
+  border-radius: 10px;
+  box-shadow:    var(--shadow);
+  margin-bottom: 20px;
+  overflow:      hidden;
+  border:        1px solid rgba(212, 160, 23, 0.15);
+  transition:    box-shadow var(--transition);
+}
+.enrolled-course-item:hover { box-shadow: var(--shadow-lg); }
+
+.enrolled-course-header {
+  display:     flex;
+  align-items: center;
+  gap:         16px;
+  padding:     20px 24px;
+}
+
+.enrolled-course-icon {
+  width:           52px;
+  height:          52px;
+  border-radius:   8px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       1.6rem;
+  flex-shrink:     0;
+}
+
+.enrolled-course-info { flex: 1; min-width: 0; }
+
+.enrolled-course-title {
+  font-family:   var(--font-display);
+  color:         var(--dark-brown);
+  font-size:     0.95rem;
+  margin-bottom: 8px;
+  font-weight:   400;
+}
+
+/* Progress bar */
+.progress-bar-wrap {
+  background:    var(--parchment);
+  border-radius: 100px;
+  height:        8px;
+  overflow:      hidden;
+  margin-bottom: 4px;
+}
+
+.progress-bar-fill {
+  height:        100%;
+  background:    linear-gradient(90deg, var(--saffron), var(--gold));
+  border-radius: 100px;
+  transition:    width 0.4s ease;
+  min-width:     4px; /* always visible */
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color:     var(--text-light);
+}
+
+/* Empty state (no enrolled courses) */
+.empty-state {
+  text-align: center;
+  padding:    80px 40px;
+  color:      var(--text-light);
+}
+.empty-state .empty-icon {
+  font-size:     4rem;
+  margin-bottom: 16px;
+  display:       block;
+}
+.empty-state h3 {
+  font-family:   var(--font-display);
+  margin-bottom: 8px;
+  color:         var(--mid-brown);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   10. VIDEO PLAYER PAGE
+══════════════════════════════════════════════════════════════ */
+
+/* Two-column layout: video | playlist */
+.player-layout {
+  display:               grid;
+  grid-template-columns: 1fr 340px;
+  min-height:            calc(100vh - 64px);
+  background:            var(--cream);
+}
+
+.player-main { padding: 32px 40px; }
+
+.player-back {
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  background:    none;
+  border:        none;
+  color:         var(--text-light);
+  font-family:   var(--font-body);
+  font-size:     1rem;
+  cursor:        pointer;
+  margin-bottom: 20px;
+  padding:       0;
+  transition:    color var(--transition);
+}
+.player-back:hover { color: var(--saffron); }
+
+/* YouTube iframe container — 16:9 aspect ratio */
+.video-wrapper {
+  background:    #000;
+  border-radius: 10px;
+  overflow:      hidden;
+  aspect-ratio:  16 / 9;
+  width:         100%;
+  box-shadow:    var(--shadow-lg);
+  margin-bottom: 24px;
+}
+
+.video-wrapper iframe {
+  width:   100%;
+  height:  100%;
+  border:  none;
+  display: block;
+}
+
+.video-info h2 {
+  font-family:   var(--font-display);
+  color:         var(--dark-brown);
+  font-size:     1.4rem;
+  margin-bottom: 8px;
+  font-weight:   400;
+}
+
+.video-meta {
+  display:     flex;
+  align-items: center;
+  gap:         20px;
+  color:       var(--text-light);
+  font-size:   0.9rem;
+  font-style:  italic;
+  margin-bottom: 20px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   11. PLAYLIST SIDEBAR
+══════════════════════════════════════════════════════════════ */
+.playlist-sidebar {
+  background:  white;
+  border-left: 1px solid rgba(212, 160, 23, 0.2);
+  overflow-y:  auto;
+  max-height:  calc(100vh - 64px);
+  position:    sticky;
+  top:         64px;
+}
+
+.playlist-header {
+  padding:     20px 20px 14px;
+  border-bottom: 1px solid var(--parchment);
+  background:  var(--dark-brown);
+  position:    sticky;
+  top:         0;
+  z-index:     5;
+}
+
+.playlist-header h3 {
+  font-family: var(--font-display);
+  color:       var(--gold-light);
+  font-size:   0.9rem;
+  font-weight: 400;
+}
+
+.playlist-progress-text {
+  color:     rgba(253, 246, 227, 0.6);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.playlist-item {
+  display:       flex;
+  align-items:   flex-start;
+  gap:           12px;
+  padding:       14px 20px;
+  border-bottom: 1px solid var(--parchment);
+  cursor:        pointer;
+  transition:    background var(--transition);
+}
+.playlist-item:hover      { background: var(--parchment); }
+/* Currently playing item */
+.playlist-item.active-video {
+  background:  #FFF8E7;
+  border-left: 3px solid var(--gold);
+}
+/* Completed items are slightly muted */
+.playlist-item.completed { opacity: 0.75; }
+
+/* Lesson number bubble */
+.playlist-num {
+  min-width:       28px;
+  height:          28px;
+  background:      var(--parchment);
+  border-radius:   50%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       0.8rem;
+  color:           var(--text-light);
+  font-weight:     600;
+  flex-shrink:     0;
+  transition:      background var(--transition);
+}
+/* Completed — green checkmark bubble */
+.playlist-num.done {
+  background: var(--success);
+  color:      white;
+}
+
+.playlist-item-info h4 {
+  font-size:   0.88rem;
+  color:       var(--text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.playlist-item-info span {
+  font-size:  0.78rem;
+  color:      var(--text-light);
+  font-style: italic;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   12. QUIZ PAGE
+══════════════════════════════════════════════════════════════ */
+.quiz-container {
+  max-width: 700px;
+  margin:    0 auto;
+  padding:   48px 24px;
+}
+
+.quiz-header-bar {
+  display:     flex;
+  align-items: center;
+  gap:         16px;
+  margin-bottom: 32px;
+  flex-wrap:   wrap;
+}
+
+.quiz-course-name {
+  font-family: var(--font-display);
+  color:       var(--dark-brown);
+  font-size:   1.1rem;
+}
+
+.quiz-progress-pill {
+  margin-left:   auto;
+  background:    var(--parchment);
+  padding:       6px 16px;
+  border-radius: 100px;
+  font-size:     0.85rem;
+  color:         var(--text-light);
+}
+
+.question-card {
+  background:    white;
+  border-radius: 12px;
+  padding:       36px 40px;
+  box-shadow:    var(--shadow);
+  border-top:    4px solid var(--gold);
+  margin-bottom: 24px;
+}
+
+.question-num {
+  font-size:      0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color:          var(--text-light);
+  margin-bottom:  12px;
+}
+
+/* Big Devanagari word shown above question */
+.quiz-devanagari {
+  font-family:   var(--font-devanag);
+  font-size:     1.6rem;
+  color:         var(--saffron);
+  text-align:    center;
+  margin-bottom: 20px;
+  display:       block;
+}
+
+.question-text {
+  font-family:   var(--font-body);
+  font-size:     1.3rem;
+  color:         var(--dark-brown);
+  line-height:   1.5;
+  margin-bottom: 28px;
+}
+
+.options-list {
+  display:        flex;
+  flex-direction: column;
+  gap:            12px;
+}
+
+/* Individual answer option button */
+.option-btn {
+  display:       flex;
+  align-items:   center;
+  gap:           14px;
+  padding:       14px 20px;
+  border:        1.5px solid #E0D5C0;
+  border-radius: 8px;
+  background:    var(--cream);
+  cursor:        pointer;
+  font-family:   var(--font-body);
+  font-size:     1rem;
+  color:         var(--text);
+  text-align:    left;
+  transition:    all var(--transition);
+  width:         100%;
+}
+.option-btn:hover        { border-color: var(--gold); background: #FFF9F0; }
+.option-btn.selected     { border-color: var(--saffron); background: #FFF3E7; }
+.option-btn.correct      { border-color: var(--success); background: #F0FFF4; color: var(--success); }
+.option-btn.wrong        { border-color: var(--deep-red); background: #FFF0F0; color: var(--deep-red); }
+.option-btn:disabled     { cursor: not-allowed; }
+
+/* A/B/C/D letter circle */
+.option-letter {
+  min-width:       32px;
+  height:          32px;
+  background:      var(--parchment);
+  border-radius:   50%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-weight:     700;
+  font-size:       0.85rem;
+  flex-shrink:     0;
+}
+
+/* Quiz navigation row */
+.quiz-nav {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   13. CERTIFICATE PAGE
+══════════════════════════════════════════════════════════════ */
+.certificate-container {
+  min-height:      100vh;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  padding:         40px 20px;
+  background:      var(--cream);
+}
+
+/* The certificate card itself */
+.certificate {
+  width:      800px;
+  max-width:  100%;
+  background: white;
+  border:     2px solid var(--gold);
+  border-radius: 4px;
+  padding:    56px 64px;
+  position:   relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  overflow:   hidden;
+}
+
+/* Double-rule inner border using pseudo-elements */
+.certificate::before,
+.certificate::after {
+  content:      '';
+  position:     absolute;
+  pointer-events: none;
+  border-radius: 2px;
+}
+.certificate::before {
+  inset:  10px;
+  border: 1px solid rgba(212, 160, 23, 0.4);
+}
+.certificate::after {
+  inset:  16px;
+  border: 1px solid rgba(212, 160, 23, 0.2);
+}
+
+/* Four corner decorations */
+.cert-corner {
+  position:     absolute;
+  width:        60px;
+  height:       60px;
+  border:       3px double var(--gold);
+}
+.cert-corner.tl { top: 6px;  left: 6px;  border-right: none; border-bottom: none; }
+.cert-corner.tr { top: 6px;  right: 6px; border-left:  none; border-bottom: none; }
+.cert-corner.bl { bottom: 6px; left: 6px;  border-right: none; border-top:  none; }
+.cert-corner.br { bottom: 6px; right: 6px; border-left:  none; border-top:  none; }
+
+.cert-om {
+  font-family:   var(--font-devanag);
+  font-size:     2.5rem;
+  color:         var(--gold);
+  margin-bottom: 8px;
+  display:       block;
+}
+
+.cert-school {
+  font-family:    var(--font-display);
+  font-size:      1.1rem;
+  color:          var(--text-light);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom:  24px;
+}
+
+/* Horizontal gold rule divider */
+.cert-line {
+  width:         120px;
+  height:        1px;
+  background:    var(--gold);
+  margin:        0 auto 24px;
+}
+
+.cert-heading {
+  font-family:   var(--font-display);
+  font-size:     2.2rem;
+  color:         var(--dark-brown);
+  margin-bottom: 6px;
+  font-weight:   400;
+}
+
+.cert-presents {
+  font-style:    italic;
+  color:         var(--text-light);
+  margin-bottom: 28px;
+  font-size:     1rem;
+}
+
+/* Student name — large italic serif */
+.cert-name {
+  font-family:    var(--font-body);
+  font-size:      2.4rem;
+  color:          var(--saffron);
+  font-style:     italic;
+  margin-bottom:  20px;
+  border-bottom:  1px solid var(--parchment);
+  padding-bottom: 20px;
+}
+
+.cert-body {
+  font-size:     1.05rem;
+  color:         var(--text);
+  line-height:   1.7;
+  margin-bottom: 28px;
+}
+
+.cert-course {
+  font-family: var(--font-display);
+  color:       var(--dark-brown);
+  font-size:   1.1rem;
+}
+
+/* Score pill badge */
+.cert-score {
+  display:       inline-block;
+  background:    linear-gradient(135deg, var(--saffron), var(--gold));
+  color:         var(--dark);
+  padding:       6px 24px;
+  border-radius: 100px;
+  font-weight:   700;
+  margin:        12px 0 28px;
+  font-size:     1rem;
+}
+
+.cert-date {
+  font-size:  0.9rem;
+  color:      var(--text-light);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.cert-footer {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     flex-end;
+  margin-top:      36px;
+  border-top:      1px solid var(--parchment);
+  padding-top:     20px;
+  font-size:       0.85rem;
+  color:           var(--text-light);
+}
+
+/* Stylised signature text */
+.cert-sign {
+  font-family: var(--font-body);
+  font-style:  italic;
+  font-size:   1.4rem;
+  color:       var(--dark-brown);
+  display:     block;
+}
+
+/* Certificate action buttons container */
+.cert-actions {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   9d. PROFILE SECTION
+══════════════════════════════════════════════════════════════ */
+.profile-container {
+  padding:     48px 60px;
+  max-width:   820px;
+}
+
+.profile-card {
+  background:    white;
+  border-radius: 16px;
+  box-shadow:    var(--shadow);
+  padding:       40px 44px;
+  border:        1px solid rgba(212, 160, 23, 0.12);
+}
+
+/* Large avatar circle */
+.profile-avatar {
+  width:            80px;
+  height:           80px;
+  background:       linear-gradient(135deg, var(--saffron), var(--gold));
+  border-radius:    50%;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-family:      var(--font-display);
+  font-size:        2rem;
+  color:            white;
+  font-weight:      700;
+  margin-bottom:    20px;
+  box-shadow:       0 4px 16px rgba(232, 117, 26, 0.3);
+}
+
+.profile-name {
+  font-family:   var(--font-display);
+  font-size:     1.5rem;
+  color:         var(--dark-brown);
+  font-weight:   400;
+  margin-bottom: 4px;
+}
+
+.profile-email {
+  color:         var(--text-light);
+  font-size:     0.95rem;
+  font-style:    italic;
+  margin-bottom: 28px;
+}
+
+/* Stats row: 3 stat boxes */
+.profile-stats {
+  display:     flex;
+  gap:         16px;
+  margin-bottom: 36px;
+  flex-wrap:   wrap;
+}
+
+.profile-stat-item {
+  flex:           1;
+  min-width:      120px;
+  background:     var(--cream);
+  border:         1.5px solid rgba(212, 160, 23, 0.15);
+  border-radius:  12px;
+  padding:        20px 16px;
+  text-align:     center;
+  transition:     box-shadow var(--transition);
+}
+.profile-stat-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.profile-stat-num {
+  display:       block;
+  font-family:   var(--font-display);
+  font-size:     1.6rem;
+  color:         var(--saffron);
+  font-weight:   700;
+  margin-bottom: 4px;
+}
+
+.profile-stat-label {
+  font-size: 0.85rem;
+  color:     var(--text-light);
+}
+
+/* Certificates Earned section */
+.profile-certificates-section {
+  border-top:  1px solid var(--parchment);
+  padding-top: 28px;
+  margin-bottom: 32px;
+}
+
+.profile-section-heading {
+  font-family:   var(--font-display);
+  font-size:     1.15rem;
+  color:         var(--dark-brown);
+  font-weight:   400;
+  margin-bottom: 16px;
+}
+
+.profile-empty-msg {
+  color:      var(--text-light);
+  font-style: italic;
+  font-size:  0.95rem;
+}
+
+.profile-cert-item {
+  display:       flex;
+  align-items:   center;
+  gap:           14px;
+  padding:       14px 18px;
+  background:    var(--cream);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border:        1px solid rgba(212, 160, 23, 0.12);
+}
+
+.profile-cert-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.profile-cert-info {
+  flex: 1;
+}
+
+.profile-cert-title {
+  font-family: var(--font-display);
+  font-size:   0.9rem;
+  color:       var(--dark-brown);
+  font-weight: 400;
+}
+
+.profile-cert-score {
+  font-size: 0.82rem;
+  color:     var(--text-light);
+}
+
+.btn-view-cert {
+  background:    linear-gradient(135deg, var(--saffron), var(--gold));
+  color:         var(--dark);
+  border:        none;
+  padding:       6px 16px;
+  border-radius: 4px;
+  font-family:   var(--font-body);
+  font-size:     0.85rem;
+  font-weight:   600;
+  cursor:        pointer;
+  text-decoration: none;
+  transition:    all var(--transition);
+}
+.btn-view-cert:hover {
+  transform: scale(1.04);
+}
+
+/* Update Password section */
+.profile-password-section {
+  border-top:  1px solid var(--parchment);
+  padding-top: 28px;
+}
+
+.profile-password-form {
+  max-width: 400px;
+}
+
+.profile-password-form .form-group {
+  margin-bottom: 18px;
+}
+
+.profile-password-form .form-group label {
+  display:       block;
+  font-weight:   600;
+  color:         var(--mid-brown);
+  margin-bottom: 6px;
+  font-size:     0.88rem;
+  letter-spacing: 0.3px;
+}
+
+.profile-password-form .form-group input {
+  width:         100%;
+  padding:       11px 16px;
+  border:        1.5px solid #E0D5C0;
+  border-radius: 6px;
+  font-family:   var(--font-body);
+  font-size:     0.95rem;
+  color:         var(--text);
+  background:    var(--cream);
+  transition:    border-color var(--transition), box-shadow var(--transition);
+  outline:       none;
+}
+
+.profile-password-form .form-group input:focus {
+  border-color: var(--gold);
+  box-shadow:   0 0 0 3px rgba(212, 160, 23, 0.15);
+}
+
+.btn-update-password {
+  background:     linear-gradient(135deg, var(--saffron), var(--deep-red));
+  color:          white;
+  border:         none;
+  padding:        12px 28px;
+  border-radius:  6px;
+  font-family:    var(--font-display);
+  font-size:      0.9rem;
+  font-weight:    400;
+  cursor:         pointer;
+  letter-spacing: 0.5px;
+  transition:     all var(--transition);
+  margin-top:     4px;
+}
+.btn-update-password:hover {
+  transform:  translateY(-2px);
+  box-shadow: 0 6px 20px rgba(192, 57, 43, 0.35);
+}
+
+/* Success message */
+.success-msg {
+  background:    #F0FFF4;
+  border:        1px solid #A3D9A5;
+  color:         var(--success);
+  padding:       10px 14px;
+  border-radius: 6px;
+  font-size:     0.9rem;
+  margin-bottom: 16px;
+  display:       none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   14. TOAST NOTIFICATION
+   ──────────────────────────────────────────────────────────────
+   A brief auto-dismissing message bar at the bottom-centre.
+   Shown/hidden by toggling the .show class in JS.
+══════════════════════════════════════════════════════════════ */
+.toast {
+  position:       fixed;
+  bottom:         32px;
+  left:           50%;
+  transform:      translateX(-50%) translateY(100px); /* hidden off-screen */
+  background:     var(--dark-brown);
+  color:          var(--gold-light);
+  padding:        14px 28px;
+  border-radius:  8px;
+  font-family:    var(--font-body);
+  font-size:      1rem;
+  font-weight:    600;
+  z-index:        9999;
+  transition:     transform 0.3s ease;
+  box-shadow:     var(--shadow-lg);
+  border:         1px solid rgba(212, 160, 23, 0.3);
+  pointer-events: none;
+  white-space:    nowrap;
+}
+
+/* Adding .show slides it into view */
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   15. RESPONSIVE / MEDIA QUERIES
+══════════════════════════════════════════════════════════════ */
+
+/* ── Tablet & below (≤ 900px) ─────────────────────────────── */
+@media (max-width: 900px) {
+
+  /* Player: stack columns vertically */
+  .player-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .playlist-sidebar {
+    max-height: 340px;
+    position:   relative;
+    top:        0;
+    border-left: none;
+    border-top:  1px solid rgba(212, 160, 23, 0.2);
+  }
+
+  /* Reduce horizontal padding throughout */
+  .landing-nav,
+  .section-header,
+  .courses-grid,
+  .my-learning-container,
+  .profile-container {
+    padding-left:  24px;
+    padding-right: 24px;
+  }
+
+  .app-header { padding: 0 20px; }
+  .player-main { padding: 20px; }
+
+  /* Auth card narrower padding on small screens */
+  .auth-card { padding: 36px 28px; }
+
+  /* Certificate */
+  .certificate { padding: 32px 24px; }
+  .cert-heading { font-size: 1.6rem; }
+  .cert-name    { font-size: 1.8rem; }
+}
+
+/* ── Mobile (≤ 600px) ─────────────────────────────────────── */
+@media (max-width: 600px) {
+
+  /* Hide user name text, show only avatar */
+  .user-name { display: none; }
+
+  /* Stack hero CTAs */
+  .hero-cta { flex-direction: column; align-items: stretch; }
+
+  /* Reduce landing nav padding */
+  .landing-nav { padding: 16px 20px; }
+  .logo-text   { font-size: 1rem; }
+
+  /* Reduce hero padding */
+  .hero { padding: 60px 24px 48px; }
+
+  /* Full-width auth card */
+  .auth-card {
+    max-width: 100%;
+    border-radius: 0;
+    min-height: 100vh;
+  }
+
+  /* Profile card: less padding */
+  .profile-card { padding: 28px 20px; }
+  .profile-stats { flex-direction: column; }
+
+  /* Courses: single column */
+  .courses-grid { grid-template-columns: 1fr; padding: 24px; }
+
+  /* My Learning: stack course header vertically */
+  .enrolled-course-header {
+    flex-wrap:  wrap;
+    row-gap:    10px;
+  }
+  .btn-continue { width: 100%; text-align: center; }
+
+  /* Question card: less padding */
+  .question-card { padding: 24px 20px; }
+
+  /* Certificate */
+  .certificate { padding: 24px 16px; }
+  .cert-footer { flex-direction: column; gap: 12px; text-align: center; }
+}

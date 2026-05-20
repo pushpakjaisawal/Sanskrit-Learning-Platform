@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║          SANSKRIT VIDYALAYA — Register Page                  ║
+  ║                                                              ║
+  ║  File       : pages/register.html                            ║
+  ║  Purpose    : New student sign-up form. Validates input,     ║
+  ║               checks for duplicate email, saves account      ║
+  ║               to localStorage, then redirects to dashboard.  ║
+  ║  Dependencies: ../css/styles.css, ../js/auth.js              ║
+  ║  On Success : Redirects → dashboard.html                     ║
+  ║  Validation :                                                ║
+  ║    • All fields required                                     ║
+  ║    • Password ≥ 6 characters                                 ║
+  ║    • Email must be unique                                    ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register – Sanskrit Vidyalaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="auth-body">
+
+  <div class="auth-card" role="main">
+
+    <span class="auth-om" aria-hidden="true">ॐ</span>
+
+    <button class="auth-back" onclick="window.location='../index.html'">← Back to Home</button>
+
+    <h1 class="auth-title">Create Account</h1>
+
+    <!-- Sanskrit proverb about the value of education -->
+    <p class="auth-subtitle" lang="sa" title="Learning adorns a person">
+      विद्याभ्यासो नरस्य भूषणम्
+    </p>
+
+    <!-- ── Inline validation error banner ─────────────────── -->
+    <!-- auth.js writes the error message text before showing this -->
+    <div class="error-msg" id="register-error" role="alert" aria-live="assertive"></div>
+
+    <!-- ── Registration Form ──────────────────────────────── -->
+    <div class="form-group">
+      <label for="reg-name">Full Name</label>
+      <input
+        type="text"
+        id="reg-name"
+        placeholder="Your full name"
+        autocomplete="name"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="reg-email">Email Address</label>
+      <input
+        type="email"
+        id="reg-email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="reg-gender">Gender</label>
+      <select id="reg-gender" required>
+        <option value="" disabled selected>Select your gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+        <option value="prefer-not">Prefer not to say</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="reg-dob">Date of Birth</label>
+      <input
+        type="date"
+        id="reg-dob"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="reg-password">Password</label>
+      <input
+        type="password"
+        id="reg-password"
+        placeholder="8–16 chars, 1 uppercase, 1 number, 1 special"
+        autocomplete="new-password"
+        minlength="8"
+        maxlength="16"
+        required
+      />
+    </div>
+
+    <!-- Triggers doRegister() in auth.js -->
+    <button class="btn-auth" onclick="doRegister()">Create My Account</button>
+
+    <p class="auth-switch">
+      Already enrolled? <a href="login.html">Login here →</a>
+    </p>
+
+  </div><!-- /.auth-card -->
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║          SANSKRIT VIDYALAYA — संस्कृत विद्यालय               ║
+  ║          Main Entry Point: Landing Page                      ║
+  ║                                                              ║
+  ║  File       : index.html                                     ║
+  ║  Purpose    : Landing / Home page shown to unauthenticated   ║
+  ║               visitors. Contains hero section, feature       ║
+  ║               highlights, and navigation to Login / Register ║
+  ║  Dependencies: css/styles.css, js/app.js                     ║
+  ║  Author     : Sanskrit Vidyalaya Dev Team                    ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sanskrit Vidyalaya – संस्कृत विद्यालय</title>
+
+  <!-- Google Fonts: Cinzel Decorative (headings), Crimson Pro (body), Noto Sans Devanagari (Sanskrit text) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Main stylesheet — all design tokens, components, layout rules -->
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+  <!-- ┌─────────────────────────────────────────────────────────┐
+       │  LANDING PAGE WRAPPER                                   │
+       │  Full-screen dark background with mandala animation     │
+       └─────────────────────────────────────────────────────────┘ -->
+  <div id="page-landing" class="page active">
+
+    <!-- Decorative rotating mandala pattern (CSS-only, pure opacity) -->
+    <div class="mandala-bg" aria-hidden="true"></div>
+
+    <!-- ── Top Navigation Bar ─────────────────────────── -->
+    <nav class="landing-nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-brand">
+        <!-- Brand name in English and Devanagari -->
+        <div class="logo-text">Sanskrit Vidyalaya</div>
+        <span class="logo-devanagari" lang="sa">संस्कृत विद्यालय</span>
+      </div>
+
+      <div class="nav-buttons">
+        <!-- Redirects to login.html -->
+        <button class="btn btn-outline" onclick="window.location='../pages/login.html'">Login</button>
+        <!-- Redirects to register.html -->
+        <button class="btn btn-solid"   onclick="window.location='../pages/register.html'">Get Started</button>
+      </div>
+    </nav>
+
+    <!-- ── Hero Section ───────────────────────────────── -->
+    <section class="hero" aria-labelledby="hero-heading">
+
+      <!-- Small decorative top badge -->
+      <div class="hero-badge" role="text">🪔 Ancient Wisdom · Modern Learning</div>
+
+      <!-- Primary heading — staggered CSS fade-up animation -->
+      <h1 class="hero-title" id="hero-heading">
+        Learn the Language of<br /><span>the Gods</span>
+      </h1>
+
+      <!-- Sanskrit quote in Devanagari with meaning -->
+      <div class="hero-devanagari" lang="sa" title="True knowledge is that which leads to liberation">
+        सा विद्या या विमुक्तये
+      </div>
+
+      <p class="hero-subtitle">
+        "True knowledge is that which leads to liberation." Begin your journey into
+        Sanskrit — the world's most ancient and scientific language.
+      </p>
+
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="window.location='../pages/register.html'">
+          Start Learning Free
+        </button>
+        <button class="btn btn-secondary" onclick="window.location='../pages/login.html'">
+          I Have an Account
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Feature Strip ──────────────────────────────── -->
+    <!-- Five feature highlights rendered as a responsive grid strip -->
+    <div class="features-strip" role="list" aria-label="Platform features">
+
+      <div class="feature-item" role="listitem">
+        <span class="feature-icon" aria-hidden="true">📜</span>
+        <h3>Structured Courses</h3>
+        <p>From Alphabet to Advanced Texts</p>
+      </div>
+
+      <div class="feature-item" role="listitem">
+        <span class="feature-icon" aria-hidden="true">🎬</span>
+        <h3>Video Lessons</h3>
+        <p>Curated YouTube playlists embedded</p>
+      </div>
+
+      <div class="feature-item" role="listitem">
+        <span class="feature-icon" aria-hidden="true">📝</span>
+        <h3>Quizzes &amp; Tests</h3>
+        <p>Assess your understanding at every step</p>
+      </div>
+
+      <div class="feature-item" role="listitem">
+        <span class="feature-icon" aria-hidden="true">🏆</span>
+        <h3>Certificates</h3>
+        <p>Earn verified completion certificates</p>
+      </div>
+
+      <div class="feature-item" role="listitem">
+        <span class="feature-icon" aria-hidden="true">🆓</span>
+        <h3>Free Forever</h3>
+        <p>All core content at no cost</p>
+      </div>
+
+    </div>
+  </div><!-- /#page-landing -->
+
+  <!-- Global toast notification (shared across all pages via JS) -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>

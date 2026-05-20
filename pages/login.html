@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║          SANSKRIT VIDYALAYA — Login Page                     ║
+  ║                                                              ║
+  ║  File       : pages/login.html                               ║
+  ║  Purpose    : Allows returning students to authenticate and  ║
+  ║               access their dashboard. Validates credentials  ║
+  ║               against localStorage-stored user accounts.    ║
+  ║  Dependencies: ../css/styles.css, ../js/auth.js              ║
+  ║  On Success : Redirects → dashboard.html                     ║
+  ║  On Failure : Shows inline error message                     ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – Sanskrit Vidyalaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="auth-body">
+
+  <!-- ┌─────────────────────────────────────────────────────────┐
+       │  AUTH CARD — centred on screen                          │
+       │  Has a top gold border, OM watermark, and form fields   │
+       └─────────────────────────────────────────────────────────┘ -->
+  <div class="auth-card" role="main">
+
+    <!-- Decorative OM watermark (CSS pseudo-element backup) -->
+    <span class="auth-om" aria-hidden="true">ॐ</span>
+
+    <!-- Back link to landing page -->
+    <button class="auth-back" onclick="window.location='../index.html'">← Back to Home</button>
+
+    <!-- Card heading -->
+    <h1 class="auth-title">Welcome Back</h1>
+    <p class="auth-subtitle" lang="sa">नमस्ते — continue your Sanskrit journey</p>
+
+    <!-- ── Inline error banner (hidden by default) ────────── -->
+    <!-- Shown by auth.js when login fails -->
+    <div class="error-msg" id="login-error" role="alert" aria-live="assertive">
+      Invalid email or password. Please try again.
+    </div>
+
+    <!-- ── Login Form ──────────────────────────────────────── -->
+    <!--
+      NOTE: We use a <div>-based form (not <form>) to avoid page
+      reloads. Submission is handled entirely by auth.js → doLogin().
+    -->
+    <div class="form-group">
+      <label for="login-email">Email Address</label>
+      <input
+        type="email"
+        id="login-email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="login-password">Password</label>
+      <input
+        type="password"
+        id="login-password"
+        placeholder="••••••••"
+        autocomplete="current-password"
+        required
+      />
+    </div>
+
+    <!-- Triggers doLogin() in auth.js -->
+    <button class="btn-auth" onclick="doLogin()">Login to Dashboard</button>
+
+    <p class="auth-forgot">
+      <a href="forgot-password.html">Forgot Password?</a>
+    </p>
+
+    <!-- Switch to registration -->
+    <p class="auth-switch">
+      New student? <a href="register.html">Create an account →</a>
+    </p>
+
+  </div><!-- /.auth-card -->
+
+  <!-- Toast for brief success/error messages -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Auth logic: doLogin(), doRegister(), session helpers -->
+  <script src="../js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║          SANSKRIT VIDYALAYA — Video Player Page              ║
+  ║                                                              ║
+  ║  File       : pages/player.html                              ║
+  ║  Purpose    : Displays the YouTube-embedded video for the    ║
+  ║               currently active course lesson. Shows a        ║
+  ║               sidebar playlist of all lessons with progress  ║
+  ║               indicators. Allows students to mark videos     ║
+  ║               complete and navigate the course playlist.     ║
+  ║                                                              ║
+  ║  URL Param  : ?course=<id>  e.g. player.html?course=1        ║
+  ║               The course ID is used to load the correct      ║
+  ║               course data from data.js.                      ║
+  ║                                                              ║
+  ║  Dependencies:                                               ║
+  ║    ../css/styles.css  – full UI styles                       ║
+  ║    ../js/data.js      – COURSES array                        ║
+  ║    ../js/auth.js      – session guard                        ║
+  ║    ../js/player.js    – loadPlayer(), markVideoDone(),       ║
+  ║                         renderPlaylist(), checkQuizEligib.   ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Player – Sanskrit Vidyalaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+  <!-- ── Sticky Header ─────────────────────────────────── -->
+  <header class="app-header" role="banner">
+    <div class="app-logo">संस्कृत Vidyalaya</div>
+    <div class="user-info">
+      <div class="user-avatar" id="player-avatar-text" aria-hidden="true">S</div>
+      <span class="user-name"  id="player-display-name">Student</span>
+      <button class="btn-logout" onclick="window.location='dashboard.html'">← Dashboard</button>
+    </div>
+  </header>
+
+  <!-- ┌─────────────────────────────────────────────────────────┐
+       │  TWO-COLUMN LAYOUT                                      │
+       │  Left (flex 1) : video + info                           │
+       │  Right (340px) : lesson playlist sidebar                │
+       └─────────────────────────────────────────────────────────┘ -->
+  <div class="player-layout">
+
+    <!-- ══════════════════════════════════════════════════
+         MAIN VIDEO AREA (left column)
+    ══════════════════════════════════════════════════ -->
+    <main class="player-main" role="main">
+
+      <!-- Back to dashboard -->
+      <button class="player-back" onclick="window.location='dashboard.html'">
+        ← Back to Dashboard
+      </button>
+
+      <!-- ── YouTube Embed ──────────────────────────── -->
+      <!--
+        The iframe src is updated dynamically by player.js → loadVideo().
+        We start with an empty src to avoid any default load.
+        YouTube parameters used:
+          rel=0           – don't show related videos from other channels
+          modestbranding=1 – minimal YouTube branding
+      -->
+      <div class="video-wrapper" role="region" aria-label="Video player">
+        <iframe
+          id="yt-iframe"
+          src=""
+          title="Sanskrit lesson video"
+          allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe>
+      </div>
+
+      <!-- ── Video Metadata ─────────────────────────── -->
+      <div class="video-info">
+        <!-- Updated by loadVideo() in player.js -->
+        <h2 id="current-video-title">Loading lesson…</h2>
+
+        <div class="video-meta">
+          <span id="current-course-label">Course</span>
+          <span id="video-count-label">Lesson 1 of 1</span>
+        </div>
+
+        <!--
+          Mark as Complete button
+          ─────────────────────────
+          • Calls markVideoDone() in player.js
+          • Disabled once the video has been completed
+          • On click: saves progress, advances to next video
+        -->
+        <button
+          class="btn-mark-done"
+          id="btn-mark-done"
+          onclick="markVideoDone()"
+          aria-label="Mark this lesson as complete"
+        >✓ Mark as Complete</button>
+
+      </div><!-- /.video-info -->
+
+    </main><!-- /.player-main -->
+
+    <!-- ══════════════════════════════════════════════════
+         PLAYLIST SIDEBAR (right column)
+         Sticky, scrollable list of all lessons in the course.
+    ══════════════════════════════════════════════════ -->
+    <aside class="playlist-sidebar" role="complementary" aria-label="Course playlist">
+
+      <!-- Sidebar header — sticky inside the aside -->
+      <div class="playlist-header">
+        <!-- Updated by renderPlaylist() in player.js -->
+        <h3 id="playlist-course-title">Course Playlist</h3>
+        <div class="playlist-progress-text" id="playlist-progress-text">0 of 0 completed</div>
+      </div>
+
+      <!--
+        Playlist items — injected by renderPlaylist() in player.js.
+        Each item shows:
+          • Lesson number (or ✓ check if completed)
+          • Lesson title
+          • Duration
+        Clicking a row calls loadVideo(course, index).
+      -->
+      <div id="playlist-items" role="list" aria-label="Lesson list">
+        <!-- Injected by renderPlaylist() -->
+      </div>
+
+      <!--
+        Take Quiz / Get Certificate button
+        ────────────────────────────────────
+        Hidden until ≥70% of videos are completed.
+        Shown by checkQuizEligibility() in player.js.
+        • If quiz not passed → links to quiz.html
+        • If quiz passed    → links to certificate.html
+      -->
+      <a
+        class="btn-take-quiz"
+        id="btn-take-quiz"
+        href="quiz.html"
+        style="display:none; text-decoration:none; text-align:center;"
+        role="button"
+      >📝 Take Final Quiz</a>
+
+    </aside><!-- /.playlist-sidebar -->
+
+  </div><!-- /.player-layout -->
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/player.js"></script>
+
+  <script>
+    /**
+     * Player Page Init
+     * ─────────────────
+     * 1. Guard: redirect to login if no session.
+     * 2. Read ?course=<id> from the URL.
+     * 3. Look up the course in COURSES (data.js).
+     * 4. Populate header with user data.
+     * 5. Call loadPlayer(course, 0) to show first lesson.
+     */
+    (function initPlayer() {
+      const user = getSession();
+      if (!user) { window.location = 'login.html'; return; }
+
+      // ── Populate header ──────────────────────────────
+      document.getElementById('player-avatar-text').textContent =
+        user.name.charAt(0).toUpperCase();
+      document.getElementById('player-display-name').textContent = user.name;
+
+      // ── Resolve course from URL parameter ───────────
+      const params   = new URLSearchParams(window.location.search);
+      const courseId = parseInt(params.get('course'), 10);
+      const course   = COURSES.find(c => c.id === courseId); // COURSES from data.js
+
+      if (!course) {
+        alert('Course not found. Returning to dashboard.');
+        window.location = 'dashboard.html';
+        return;
+      }
+
+      // ── Load first video ─────────────────────────────
+      loadPlayer(course, 0); // defined in player.js
+    })();
+  </script>
+
+</body>
+</html>
